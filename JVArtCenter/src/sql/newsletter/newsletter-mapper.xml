@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<entry key="selectListCount">
+		SELECT COUNT(*) COUNT 
+		FROM NEWSLETTER
+		WHERE NEWS_STATUS = 'N'
+	</entry>
+	
+	<entry key="selectCateListCount">
+		SELECT COUNT(*) COUNT 
+		FROM NEWSLETTER
+		WHERE NEWS_STATUS = 'N'
+		     AND NEWS_CATEGORY LIKE '%' || ? || '%'
+	</entry>
+	
+	<entry key="selectTitleListCount">
+		SELECT COUNT(*) COUNT 
+		FROM NEWSLETTER
+		WHERE NEWS_STATUS = 'N'
+		     AND NEWS_TITLE LIKE '%' || ? || '%'
+	</entry>
+	
+	<entry key="selectNewsletterList">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+					FROM (SELECT NEWS_NO
+							           , NEWS_CATEGORY
+							           , NEWS_TITLE
+							           , NEWS_DATE
+							           , NEWS_COUNT
+							           , FILE_PATH || CHANGE_NAME "TITLEIMG"
+							     FROM NEWSLETTER
+							       JOIN ATTACHMENT USING (NEWS_NO)
+							   WHERE NEWS_STATUS = 'N'
+							        AND FILE_LEVEL = 1
+				           ORDER BY NEWS_NO DESC) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="selectCateNewsList">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+					FROM (SELECT NEWS_NO
+							           , NEWS_CATEGORY
+							           , NEWS_TITLE
+							           , NEWS_DATE
+							           , NEWS_COUNT
+							           , FILE_PATH || CHANGE_NAME "TITLEIMG"
+							     FROM NEWSLETTER
+							       JOIN ATTACHMENT USING (NEWS_NO)
+							   WHERE NEWS_STATUS = 'N'
+							        AND FILE_LEVEL = 1
+							        AND NEWS_CATEGORY LIKE '%' || ? || '%'
+				           ORDER BY NEWS_NO DESC) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="selectTitleNewsList">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+					FROM (SELECT NEWS_NO
+							           , NEWS_CATEGORY
+							           , NEWS_TITLE
+							           , NEWS_DATE
+							           , NEWS_COUNT
+							           , FILE_PATH || CHANGE_NAME "TITLEIMG"
+							     FROM NEWSLETTER
+							       JOIN ATTACHMENT USING (NEWS_NO)
+							   WHERE NEWS_STATUS = 'N'
+							        AND FILE_LEVEL = 1
+							        AND NEWS_TITLE LIKE '%' || ? || '%'
+				           ORDER BY NEWS_NO DESC) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="increaseCount">
+		UPDATE NEWSLETTER
+			  SET NEWS_COUNT = NEWS_COUNT + 1
+		 WHERE NEWS_NO = ?
+		      AND NEWS_STATUS = 'N'
+	</entry>
+	
+	<entry key="selectNewsletter">
+		SELECT A.*
+		FROM (SELECT NEWS_NO
+					          , NEWS_CATEGORY
+					          , NEWS_TITLE
+						      , NEWS_DATE
+						      , NEWS_CONTENT
+							  , LEAD(NEWS_NO, 1) OVER(ORDER BY NEWS_NO) NEXT_NO
+							  , LAG(NEWS_NO, 1) OVER(ORDER BY NEWS_NO) LAST_NO
+							  , LEAD(NEWS_TITLE, 1, '다음글이 없습니다') OVER(ORDER BY NEWS_NO) NEXT_TITLE
+							  , LAG(NEWS_TITLE, 1, '이전글이 없습니다') OVER(ORDER BY NEWS_NO) LAST_TITLE
+					  FROM NEWSLETTER
+				    WHERE NEWS_STATUS = 'N' ) A
+	   WHERE NEWS_NO = ?
+	</entry>
+	
+	<entry key="selectList">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+					FROM (SELECT NEWS_NO
+							           , NEWS_CATEGORY
+							           , NEWS_TITLE
+							           , NEWS_DATE
+							           , NEWS_COUNT
+							     FROM NEWSLETTER
+							   WHERE NEWS_STATUS = 'N'
+				           ORDER BY NEWS_NO DESC) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+
+	<entry key="selectCategoryList">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+					FROM (SELECT NEWS_NO
+							           , NEWS_CATEGORY
+							           , NEWS_TITLE
+							           , NEWS_DATE
+							           , NEWS_COUNT
+							     FROM NEWSLETTER
+							   WHERE NEWS_STATUS = 'N'
+							       AND NEWS_CATEGORY LIKE '%' || ? || '%'
+				           ORDER BY NEWS_NO DESC) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+
+	<entry key="selectTitleList">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+					FROM (SELECT NEWS_NO
+							           , NEWS_CATEGORY
+							           , NEWS_TITLE
+							           , NEWS_DATE
+							           , NEWS_COUNT
+							     FROM NEWSLETTER
+							   WHERE NEWS_STATUS = 'N'
+							       AND NEWS_TITLE LIKE '%' || ? || '%'
+				           ORDER BY NEWS_NO DESC) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>	
+	
+	<entry key="selectAttachment">
+		SELECT FILE_NO
+		 		   , ORIGIN_NAME
+				   , CHANGE_NAME
+				   , FILE_PATH
+		   FROM ATTACHMENT
+		 WHERE NEWS_NO = ? 
+	</entry>
+	
+	<entry key="insertNewsletter">
+		INSERT INTO NEWSLETTER (NEWS_NO
+												, NEWS_CATEGORY
+												, NEWS_TITLE
+												, NEWS_CONTENT)
+									VALUES (SEQ_NEWS_NO.NEXTVAL
+												, ?
+												, ?
+												, ?)
+	</entry>
+	
+	<entry key="insertAttachmentList">
+		INSERT INTO ATTACHMENT(FILE_NO
+											   , NEWS_NO
+											   , ORIGIN_NAME
+											   , CHANGE_NAME
+											   , FILE_PATH
+											   , FILE_LEVEL)
+									VALUES (SEQ_FILE_NO.NEXTVAL
+												, SEQ_NEWS_NO.CURRVAL
+												, ?
+												, ?
+												, ?
+												, ?)
+	</entry>
+	
+	<entry key="updateNewsletter">
+		UPDATE NEWSLETTER 
+			  SET NEWS_CATEGORY = ?
+		    	   , NEWS_TITLE = ?
+		    	   , NEWS_CONTENT = ?  
+	     WHERE NEWS_NO = ?
+		     AND NEWS_STATUS = 'N'
+	</entry>
+	
+	<entry key="updateAttachment">
+		UPDATE ATTACHMENT
+			  SET ORIGIN_NAME = ?
+		   		   , CHANGE_NAME = ?
+		   		   , FILE_PATH = ?
+		   		   , UPLOAD_DATE = SYSDATE
+		 WHERE FILE_NO = ?
+		     AND FILE_STATUS = 'N'
+	</entry>
+	
+	<entry key="insertNewAttachment">
+		INSERT INTO ATTACHMENT (FILE_NO
+												, NEWS_NO
+												, ORIGIN_NAME
+												, CHANGE_NAME
+												, FILE_PATH)
+		      						VALUES (SEQ_FILE_NO.NEXTVAL
+		      									, ?
+		      									, ?
+		      									, ?
+		      									, ?) 
+	</entry>
+	
+	<entry key="deleteNewsletter">
+		UPDATE NEWSLETTER
+			  SET NEWS_STATUS = 'Y'
+		 WHERE NEWS_NO = ?
+	</entry>
+</properties>

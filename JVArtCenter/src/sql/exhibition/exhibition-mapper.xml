@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<entry key="selectListCount_C">
+		SELECT COUNT(*) COUNT 
+		FROM EXHIBITION
+		WHERE START_DATE &lt;= SYSDATE 
+		  AND END_DATE &gt;= SYSDATE
+		  AND EX_STATUS = 'N'
+	</entry>
+	
+	<entry key="selectListCount_P">
+		SELECT COUNT(*) COUNT 
+		FROM EXHIBITION
+		WHERE END_DATE &lt;= SYSDATE
+		  AND EX_STATUS = 'N'
+	</entry>
+	
+	<entry key="selectListCount_F">
+		SELECT COUNT(*) COUNT 
+		FROM EXHIBITION
+		WHERE START_DATE &gt;= SYSDATE 
+		  AND EX_STATUS = 'N'
+	</entry>
+	
+	<entry key="selectExhibitionList_C">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+			  FROM (SELECT EX_NO, LC_NAME, EX_TITLE, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE, EX_THUMBNAIL
+					FROM EXHIBITION
+					JOIN LOCATION USING (LC_CODE)
+					WHERE START_DATE &lt;= SYSDATE 
+					  AND END_DATE &gt;= SYSDATE
+					  AND EX_STATUS = 'N'
+					ORDER BY END_DATE) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="selectExhibitionList_P">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+			  FROM (SELECT EX_NO, LC_NAME, EX_TITLE, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE, EX_THUMBNAIL
+					FROM EXHIBITION
+					JOIN LOCATION USING (LC_CODE)
+					WHERE END_DATE &lt;= SYSDATE
+					  AND EX_STATUS = 'N'
+					ORDER BY END_DATE) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="selectExhibitionList_F">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+			  FROM (SELECT EX_NO, LC_NAME, EX_TITLE, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE, EX_THUMBNAIL
+					FROM EXHIBITION
+					JOIN LOCATION USING (LC_CODE)
+					WHERE START_DATE &gt;= SYSDATE 
+					  AND EX_STATUS = 'N'
+					ORDER BY END_DATE) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+
+	<entry key="selectExhibitionDetail">
+		SELECT EX_NO, LC_NAME, EX_TITLE, EX_CONTENT, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE, PRICE, ARTISTS, EX_THUMBNAIL, EX_IMAGE
+		FROM EXHIBITION
+		JOIN LOCATION USING (LC_CODE)
+		WHERE EX_NO = ? 
+		  AND EX_STATUS = 'N'              
+	</entry>
+	
+	<entry key="selectExhibitionSearch_P">
+		SELECT EX_NO, LC_NAME, EX_TITLE, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE, EX_THUMBNAIL
+		FROM EXHIBITION
+		JOIN LOCATION USING (LC_CODE)
+		WHERE END_DATE &lt;= SYSDATE
+		  AND EX_STATUS = 'N'
+		  AND UPPER(EX_TITLE) LIKE UPPER(?)
+		ORDER BY END_DATE
+	</entry>
+	
+	<entry key="selectExhibitionSearch_C">
+		SELECT EX_NO, LC_NAME, EX_TITLE, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE, EX_THUMBNAIL
+		FROM EXHIBITION
+		JOIN LOCATION USING (LC_CODE)
+		WHERE START_DATE &lt;= SYSDATE 
+		  AND END_DATE &gt;= SYSDATE
+		  AND EX_STATUS = 'N'
+		  AND UPPER(EX_TITLE) LIKE UPPER(?)
+		ORDER BY END_DATE
+	</entry>
+	
+	<entry key="selectExhibitionSearch_F">
+		SELECT EX_NO, LC_NAME, EX_TITLE, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE, EX_THUMBNAIL
+		FROM EXHIBITION
+		JOIN LOCATION USING (LC_CODE)
+		WHERE START_DATE &gt;= SYSDATE 
+		  AND EX_STATUS = 'N'
+		  AND UPPER(EX_TITLE) LIKE UPPER(?)
+		ORDER BY END_DATE
+	</entry>
+	
+	<entry key="checkExhibitionBookmarked">
+		SELECT *
+		FROM BOOKMARK
+		WHERE MEM_NO = ?
+		  AND EX_NO = ?
+	</entry>
+	
+	<entry key="selectExhibitionReview">
+		SELECT REVIEW_NO, REVIEW_CONTENT, RATING, TO_CHAR(REVIEW_DATE, 'YYYY-MM-DD') REVIEW_DATE
+		FROM REVIEW
+		WHERE EX_NO = ?
+		  AND REVIEW_STATUS = 'N'
+	</entry>
+	<entry key="selectMyBookmarkEx">
+		SELECT EX_TITLE, EX_THUMBNAIL
+		FROM EXHIBITION
+		WHERE EX_NO = ?
+	</entry>
+	
+	<entry key="insertBookmark">
+	INSERT INTO BOOKMARK (MEM_NO, EX_NO)
+				   VALUES(?, ?)
+	</entry>
+	
+	<entry key="deleteBookmark">
+	DELETE
+	FROM BOOKMARK
+	WHERE MEM_NO = ?
+      AND EX_NO = ?
+	</entry>
+	
+	<entry key="selectThisYear">
+		SELECT EX_TITLE, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE
+		FROM EXHIBITION
+		WHERE EXTRACT(YEAR FROM START_DATE) = EXTRACT(YEAR FROM SYSDATE)
+		ORDER BY START_DATE
+	</entry>
+	
+	<entry key="selectAllCount">
+		SELECT COUNT(*) COUNT 
+		FROM EXHIBITION
+	</entry>
+	
+	<entry key="selectExhibitionListAll">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+			  FROM (SELECT EX_NO, LC_NAME, EX_TITLE, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE
+					FROM EXHIBITION
+					JOIN LOCATION USING (LC_CODE)
+					ORDER BY EX_NO DESC) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="updateExhibition">
+		UPDATE EXHIBITION
+			SET   LC_NAME = ?
+				, EX_TITLE = ?
+				, EX_CONTENTS = ?
+				, START_DATE = ?
+				, END_DATE = ?
+				, PRICE = ?
+				, ARTISTS = ?
+				, EX_THUMBNAIL = ?
+				, EX_IMAGE = ?
+			WHERE EX_NO = ?
+	</entry>
+	
+	<entry key="insertExhibition">
+		INSERT INTO EXHIBITION
+		VALUES (SEQ_EX_NO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'N')
+	</entry>
+	
+	<entry key="deleteExhibition">
+		DELETE EXHIBITION
+			WHERE EX_NO = ?
+	</entry>
+	
+</properties>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<entry key="loginMember">
+			SELECT *
+		FROM MEMBER
+		WHERE MEM_ID = ?
+		  AND MEM_PWD = ?
+		  AND MEM_STATUS = 'N'	
+	</entry>
+	
+	<entry key="selectGrade">
+		SELECT *
+		FROM GRADE
+		WHERE GR_CODE = ?
+	</entry>
+	
+	<entry key="insertMember">
+		INSERT INTO MEMBER(MEM_NO,
+						   MEM_ID,
+						   MEM_PWD,
+						   MEM_NAME,
+						   PHONE,
+						   EMAIL,
+						   GENDER,
+						   BIRTH_DATE)
+					VALUES(SEQ_MEM_NO.NEXTVAL,
+							?,
+							?,
+							?,
+							?,
+							?,
+							?,
+							?) 
+	</entry>
+	
+	<entry key="updateMember">
+		UPDATE MEMBER
+		SET MEM_PWD = ?
+		 , EMAIL = ? 
+		 , BIRTH_DATE = ?
+		 , PHONE = ?
+		WHERE MEM_ID = ?
+	</entry>
+	
+	<entry key="selectUpdateMem">
+		SELECT *
+		FROM MEMBER
+		WHERE MEM_ID = ?
+		 AND MEM_STATUS = 'N'
+	
+	</entry>
+	
+	<entry key="findUserId">
+		SELECT MEM_ID
+		FROM MEMBER
+		WHERE MEM_NAME = ?
+		AND PHONE = ?
+		AND MEM_STATUS = 'N'
+	</entry>
+	
+	<entry key = "findPwd">
+		SELECT MEM_PWD
+		FROM MEMBER
+		WHERE MEM_ID = ?
+		AND MEM_NAME = ?
+		AND    PHONE = ?
+		AND MEM_STATUS = 'N'
+	</entry>
+	
+	<entry key="idCheck">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE MEM_ID = ?
+	</entry>
+	
+	<entry key="emailCheck">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE EMAIL = ?
+	</entry>
+	
+	<entry key="selectMyBookmarkList">
+		SELECT EX_NO
+		FROM BOOKMARK
+		WHERE MEM_NO = ?
+		ORDER BY EX_NO
+	</entry>
+	
+	<entry key="selectMyBookmarkEx">
+		SELECT EX_NO, EX_TITLE, EX_THUMBNAIL
+		FROM EXHIBITION
+		WHERE EX_NO = ?
+	</entry>
+	
+	<entry key="selectMemberList">
+		SELECT GR_CODE, MEM_ID, MEM_PWD, MEM_NAME, PHONE,EMAIL
+		FROM MEMBER
+		WHERE MEM_NO= ?
+		
+	</entry>
+	
+	<entry key="deleteMember">
+		UPDATE MEMBER
+		SET MEM_STATUS = 'Y'
+		WHERE MEM_NO = ?
+	</entry>
+	
+	
+	<entry key="selectListCount">
+		SELECT COUNT(*)
+		FROM MEMBER
+	</entry>
+	
+	<entry key="selectMemNameListCount">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE MEM_NAME LIKE '%' || ? || '%'
+	</entry>
+	
+	<entry key="selectPhoneListCount">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE PHONE LIKE '%' || ? || '%'		
+	</entry>
+	
+	<entry key="selectList">
+		SELECT *
+		FROM (SELECT  ROWNUM RNUM, A.*
+					FROM (SELECT MEM_NO, GR_NAME, MEM_ID, MEM_PWD, MEM_NAME, GENDER, EMAIL, 
+							TO_CHAR(BIRTH_DATE, 'YYYY-MM-DD') BIRTH_DATE, PHONE, ENROLL_DATE, MEM_STATUS
+							FROM MEMBER
+							JOIN GRADE USING (GR_CODE)
+					        ORDER BY MEM_NO )A)
+		WHERE RNUM BETWEEN ? AND  ?
+	</entry>
+	
+	<entry key="selectMemNameList">
+		SELECT *
+		FROM (SELECT  ROWNUM RNUM, A.*
+					FROM (SELECT MEM_NO, GR_NAME, MEM_ID, MEM_PWD, MEM_NAME, GENDER, EMAIL, 
+							TO_CHAR(BIRTH_DATE, 'YYYY-MM-DD') BIRTH_DATE, PHONE, ENROLL_DATE, MEM_STATUS
+							FROM MEMBER
+							JOIN GRADE USING (GR_CODE)
+							WHERE MEM_NAME LIKE '%' || ? || '%'
+					        ORDER BY MEM_NO )A)
+		WHERE RNUM BETWEEN ? AND  ?
+	</entry>
+		
+	<entry key="selectPhoneList">
+		SELECT *
+		FROM (SELECT  ROWNUM RNUM, A.*
+					FROM (SELECT MEM_NO, GR_NAME, MEM_ID, MEM_PWD, MEM_NAME, GENDER, EMAIL, 
+							TO_CHAR(BIRTH_DATE, 'YYYY-MM-DD') BIRTH_DATE, PHONE, ENROLL_DATE, MEM_STATUS
+							FROM MEMBER
+							JOIN GRADE USING (GR_CODE)
+							WHERE PHONE LIKE '%' || ? || '%'
+					        ORDER BY MEM_NO )A)
+		WHERE RNUM BETWEEN ? AND  ?
+	</entry>
+	
+	<entry key="deleteMember">
+		UPDATE MEMBER
+		  SET MEM_STATUS = 'Y'
+		 WHERE MEM_ID = ?
+		  AND MEM_PWD = ?
+	
+	</entry>
+	
+</properties>

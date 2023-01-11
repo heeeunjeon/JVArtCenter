@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+
+	<entry key="selectMypageReviewList">
+	SELECT   REVIEW_NO
+		        ,EX_NO
+		        ,REVIEW_CONTENT
+		        ,RATING
+		        ,REVIEW_DATE
+		FROM REVIEW
+		WHERE REVIEW_STATUS ='N'
+				AND MEM_NO =?
+		ORDER BY REVIEW_NO DESC
+		
+	</entry>
+	
+	<entry key="selectReviewDetail">
+		SELECT 
+			REVIEW_NO
+			,MEM_NO
+			,EX_NO
+			,REVIEW_CONTENT
+			,RATING
+			,REVIEW_DATE
+			,REVIEW_STATUS
+		FROM REVIEW
+		WHERE REVIEW_STATUS = 'N'
+		AND REVIEW_NO = ?
+		
+	</entry>
+	
+	<entry key="updateReview">
+		UPDATE REVIEW
+	    SET REVIEW_CONTENT = ?
+	        ,RATING = ?
+	   WHERE REVIEW_NO = ?
+	
+	</entry>
+
+	<entry key="selectListCount">
+		SELECT COUNT(*) COUNT
+		FROM REVIEW
+		WHERE REVIEW_STATUS = 'N'
+		AND MEM_NO = ?
+	</entry>
+	
+	<entry key="selectReviewList">
+		SELECT *
+		FROM(SELECT ROWNUM RNUM, A.*
+			FROM(SELECT REVIEW_NO,
+				   		MEM_ID,
+				   		EX_TITLE,
+				   		REVIEW_CONTENT,
+				   		RATING,
+				   		TO_CHAR(REVIEW_DATE, 'YYYY-MM-DD') REVIEW_DATE
+		    	 FROM REVIEW
+		    	 JOIN MEMBER USING(MEM_NO)
+		    	 JOIN EXHIBITION USING(EX_NO)
+		    	 WHERE REVIEW_STATUS = 'N'
+                 AND MEM_NO = ?
+		    	 ORDER BY REVIEW_NO DESC) A)
+	    WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="deleteReview">
+		UPDATE REVIEW
+		SET REVIEW_STATUS = 'Y'
+		WHERE REVIEW_NO = ?
+	</entry>
+	
+	<entry key="adminselectListCount">
+		SELECT COUNT(*) COUNT
+		FROM REVIEW
+		WHERE REVIEW_STATUS = 'N'
+	</entry>
+	
+	<entry key="adminselectReviewList">
+		SELECT *
+		FROM(SELECT ROWNUM RNUM, A.*
+			FROM(SELECT REVIEW_NO,
+				   		MEM_ID,
+				   		EX_TITLE,
+				   		REVIEW_CONTENT,
+				   		RATING,
+				   		TO_CHAR(REVIEW_DATE, 'YYYY-MM-DD') REVIEW_DATE
+		    	 FROM REVIEW
+		    	 JOIN MEMBER USING(MEM_NO)
+		    	 JOIN EXHIBITION USING(EX_NO)
+		    	 WHERE REVIEW_STATUS = 'N'
+		    	 ORDER BY REVIEW_NO DESC) A)
+	    WHERE RNUM BETWEEN ? AND ?
+	</entry>
+</properties>

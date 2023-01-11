@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<!-- 마이페이지 내 업데이트 된 문의내역 전체 조회 -->
+	<entry key="selectmypageUpdateQna">
+		SELECT *
+		FROM QNA
+		WHERE QNA_NO = ?
+	</entry>
+
+	<!-- 마이페이지에서 내 문의내역 업데이트 -->
+	<entry key="mypageUpdateQna">
+		UPDATE QNA
+		SET QNA_CATEGORY =?
+		  , QNA_TITLE = ?
+		  , QNA_CONTENT = ?
+		  , QNA_DATE = SYSDATE 
+		WHERE QNA_NO = ?
+	</entry>
+
+
+
+	<!-- 마이페이지에서 내 문의내역 상세 조회 -->
+	<entry key="selectmyQnalist">
+		SELECT *
+		FROM QNA
+		JOIN MEMBER USING (MEM_NO)
+		WHERE QNA_NO = ?
+		  AND QNA_STATUS = 'N' 
+	</entry> 
+	
+
+	<entry key="selectListCount">
+		SELECT COUNT(*) COUNT
+		FROM QNA
+		WHERE QNA_STATUS = 'N'
+	</entry>
+	
+	<!-- 로그인한 회원의 문의 리스트 -->
+	<entry key="selectOwnList">
+		SELECT * 
+		FROM (SELECT ROWNUM RNUM, A.*
+		        FROM (SELECT QNA_NO
+		        					, MEM_NO
+				                    , MEM_ID
+				                    , QNA_CATEGORY
+				                    , QNA_TITLE
+				                    , QNA_DATE
+				                    , ANSWER
+				                    , ANSWER_DATE
+			                 FROM QNA 
+			                   JOIN MEMBER USING (MEM_NO)
+			               WHERE MEM_NO = ?
+			                   AND QNA_STATUS = 'N' 
+			           ORDER BY QNA_NO DESC) A)
+		WHERE RNUM BETWEEN ? AND ?
+		
+	</entry>
+	
+	<entry key="selectCateListCount">
+		SELECT COUNT(*) COUNT
+		FROM QNA
+		WHERE QNA_STATUS = 'N'
+			AND QNA_CATEGORY LIKE '%' || ? || '%'
+	</entry>
+	
+	<entry key="selectMemIdListCount">
+		SELECT COUNT(*) COUNT
+		FROM QNA
+		  JOIN MEMBER USING (MEM_NO)
+		WHERE QNA_STATUS = 'N'
+			AND MEM_ID LIKE '%' || ? || '%'
+	</entry>
+	
+	<entry key="selectTitleListCount">
+		SELECT COUNT(*) COUNT
+		FROM QNA
+		WHERE QNA_STATUS = 'N'
+			AND QNA_TITLE LIKE '%' || ? || '%'
+	</entry>
+	
+	<!-- 관리자용 전체 리스트 조회 -->
+	<entry key="selectList">
+		SELECT * 
+			FROM (SELECT ROWNUM RNUM, A.*
+				        FROM (SELECT QNA_NO
+						                    , MEM_ID
+						                    , QNA_CATEGORY
+						                    , QNA_TITLE
+						                    , QNA_DATE
+						                    , ANSWER
+						                    , ANSWER_DATE
+					                 FROM QNA 
+					                   JOIN MEMBER USING (MEM_NO)
+					               WHERE QNA_STATUS = 'N' 
+					           ORDER BY QNA_NO DESC) A)
+			WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="selectCategoryList">
+		SELECT * 
+			FROM (SELECT ROWNUM RNUM, A.*
+				        FROM (SELECT QNA_NO
+						                    , MEM_ID
+						                    , QNA_CATEGORY
+						                    , QNA_TITLE
+						                    , QNA_DATE
+						                    , ANSWER
+						                    , ANSWER_DATE
+					                 FROM QNA 
+					                   JOIN MEMBER USING (MEM_NO)
+					               WHERE QNA_STATUS = 'N' 
+					                   AND QNA_CATEGORY LIKE '%' || ? || '%'
+					           ORDER BY QNA_NO DESC) A)
+			WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="selectMemIdList">
+		SELECT * 
+			FROM (SELECT ROWNUM RNUM, A.*
+				        FROM (SELECT QNA_NO
+						                    , MEM_ID
+						                    , QNA_CATEGORY
+						                    , QNA_TITLE
+						                    , QNA_DATE
+						                    , ANSWER
+						                    , ANSWER_DATE
+					                 FROM QNA 
+					                   JOIN MEMBER USING (MEM_NO)
+					               WHERE QNA_STATUS = 'N' 
+					                   AND MEM_ID LIKE '%' || ? || '%'
+					           ORDER BY QNA_NO DESC) A)
+			WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="selectTitleList">
+		SELECT * 
+			FROM (SELECT ROWNUM RNUM, A.*
+				        FROM (SELECT QNA_NO
+						                    , MEM_ID
+						                    , QNA_CATEGORY
+						                    , QNA_TITLE
+						                    , QNA_DATE
+						                    , ANSWER
+						                    , ANSWER_DATE
+					                 FROM QNA 
+					                   JOIN MEMBER USING (MEM_NO)
+					               WHERE QNA_STATUS = 'N' 
+					                   AND QNA_TITLE LIKE '%' || ? || '%'
+					           ORDER BY QNA_NO DESC) A)
+			WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="insertQna">
+		INSERT INTO QNA (QNA_NO
+								, MEM_NO
+								, QNA_CATEGORY
+								, QNA_TITLE
+								, QNA_CONTENT)
+					 VALUES (SEQ_QNA_NO.NEXTVAL
+					 		    , ?
+							    , ?
+							    , ?
+							    , ?)
+	</entry>
+	<!-- 회원 qna 상세조회 -->
+	<entry key="selectQna">
+		SELECT QNA_NO
+				  , QNA_CATEGORY
+		          , QNA_TITLE
+		          , QNA_CONTENT
+		          , QNA_DATE
+		          , ANSWER
+		   FROM QNA
+		 WHERE QNA_NO = ?
+		     AND QNA_STATUS = 'N'
+	</entry>
+	<!-- 회원 qna 문의 수정 -->
+	<entry key="updateQna">
+		UPDATE QNA
+			  SET QNA_CATEGORY = ?
+			      , QNA_TITLE = ?
+				  , QNA_CONTENT = ?
+	 	 WHERE QNA_NO = ?
+		     AND QNA_STATUS = 'N'
+	</entry>
+	<!-- 회원 qna 문의 삭제 -->
+	<entry key="deleteQna">
+		UPDATE QNA
+			  SET QNA_STATUS = 'Y'
+		 WHERE QNA_NO = ?
+	</entry>
+	<!-- 이후부터는 관리자용 -->
+	<entry key="insertQnaAnswer">
+		UPDATE QNA
+			 SET ANSWER = ?
+			 	 , ANSWER_DATE = SYSDATE
+		 WHERE QNA_NO = ?
+		     AND QNA_STATUS = 'N'
+	</entry>
+	
+	<entry key="updateQnaAnwer">
+		UPDATE QNA
+			 SET ANSWER = ?
+			 	 , ANSWER_DATE = SYSDATE
+		 WHERE QNA_NO = ?
+		     AND QNA_STATUS = 'N'
+	</entry>
+	
+	<entry key="deleteQnaAnswer">
+		UPDATE QNA
+			  SET ANSWER = NULL
+			  	  , ANSWER_DATE = NULL
+		 WHERE QNA_NO = ?
+	</entry>
+	
+	<entry key="selectmyQna">
+		SELECT QNA_NO, QNA_CATEGORY, QNA_TITLE, QNA_DATE, ANSWER
+		FROM QNA 
+		WHERE MEM_NO = ? 
+		  AND QNA_STATUS = 'N'
+	</entry>
+	
+		<entry key="mypageQnadelete">
+		UPDATE QNA
+  		 SET QNA_STATUS = 'Y'
+  		WHERE QNA_NO = ?
+	</entry>
+	
+	<entry key="selectMainList">
+		SELECT ROWNUM, QNA_NO,MEM_ID,QNA_CATEGORY,QNA_TITLE,QNA_DATE
+		FROM QNA
+        JOIN MEMBER USING (MEM_NO)
+		WHERE ANSWER IS NULL
+		AND ROWNUM BETWEEN 1 AND 5
+		ORDER BY QNA_NO DESC
+	</entry>
+</properties>
